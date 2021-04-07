@@ -4,8 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <CMatrixReader.h>
-#include <defines.h>
+#include "defines.h"
 #include <ctype.h>
 
 #ifndef MATRIXEDCPP_CMATRIXREADER_H
