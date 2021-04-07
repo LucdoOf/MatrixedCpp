@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(src)
 
 add_executable(MatrixedCpp
-        src/CMatrix.cpp
         src/CMatrix.h
         src/CMatrixException.cpp
         src/CMatrixException.h
