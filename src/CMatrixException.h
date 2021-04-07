@@ -5,11 +5,14 @@
 #ifndef MATRIXEDCPP_CMATRIXEXCEPTION_H
 #define MATRIXEDCPP_CMATRIXEXCEPTION_H
 
+#include <exception>
+
 class CMatrixException : public std::exception {
 
-    explicit Exception(int errorCode, const char* message) noexcept;
-    virtual ~Exception() = default;
-    virtual const char* what() const noexcept override;
+public:
+    explicit CMatrixException(int errorCode, char* message) noexcept;
+    ~CMatrixException() override = default;
+    const char* what() const noexcept override;
 
 };
 

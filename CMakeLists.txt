@@ -13,4 +13,5 @@ add_executable(MatrixedCpp
         src/CMatrixReader.cpp
         src/CMatrixReader.h
         src/defines.h
+        src/string_utils.cpp
         src/main.cpp)

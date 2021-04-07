@@ -3,14 +3,15 @@
 //
 
 #include "CMatrixReader.h"
+#include "CMatrixException.h"
 
 /**
  * CMatrixReader constructor
  *
  * @param filename Path of the serialized matrix file
  */
-CMatrixReader::CMatrixReader(char *filename) {
-    this->pMARFilename = strcpy(filename);
+CMatrixReader::CMatrixReader(const char *filename) {
+    this->pMARFilename = filename;
 }
 
 /**
@@ -18,7 +19,7 @@ CMatrixReader::CMatrixReader(char *filename) {
  *
  * @param reader Reader model
  */
-CMatrixReader::CMatrixReader(const CMatrixReader reader) {
+CMatrixReader::CMatrixReader(const CMatrixReader &reader) {
 
 }
 
@@ -26,7 +27,6 @@ CMatrixReader::CMatrixReader(const CMatrixReader reader) {
  * CMatrixReader destructor
  */
 CMatrixReader::~CMatrixReader() {
-    free(this->pMARFilename);
 }
 
 /**
@@ -37,7 +37,7 @@ CMatrixReader::~CMatrixReader() {
  * @throw CMatrixException if no file have been found or if the matrix is not of of the type double
  * @return
  */
-int CMatrixReader::MARRead() {
+CMatrix<double> CMatrixReader::MARRead() {
     FILE* file = this->MARGetFile();
     if (file) {
         // Buffer used to read the file
@@ -56,84 +56,84 @@ int CMatrixReader::MARRead() {
         // Number of matrix columns that have been analyzed
         int actualMatrixColumnCounter = 0;
         // buffer will iterate through all of the file lines
-        while (fgets(buffer, bufferLength, file) {
+        while (fgets(buffer, bufferLength, file)) {
             // The buffer treatment will depend on the actual number of lines analyzed
             switch (fileLineCounter) {
                 // TypeMatrice=double
                 case 0:
                     if (sscanf(buffer, "TypeMatrice=%s", matrixType) != 0) {
                         // Only the double type is supported for now
-                        if (matrixType != "double") {
+                        if (strcmp(matrixType, "double") != 0) {
                             throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_UNSUPPORTED_TYPE,
-                                       "Type " + matrixType + " isn't supported yet by deserialization, please use double only");
+                                       strMultiCat(3, "Type ", matrixType, " isn't supported yet by deserialization, please use double only"));
                         }
                     } else {
                         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
-                                       "Syntax error at line " + fileLineCounter + ", expected \"TypeMatrice=[type]\" got " + buffer);
+                                       strMultiCat(4, "Syntax error at line ", fileLineCounter, ", expected \"TypeMatrice=[type]\" got ", buffer));
                     }
                     break;
                 // NBLignes=[int]
                 case 1:
-                    if (sscanf(buffer, "NBLignes=%d", matrixLineCounter) == 0) {
+                    if (sscanf(buffer, "NBLignes=%d", &matrixLineCounter) == 0) {
                         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
-                                       "Syntax error at line " + fileLineCounter + ", expected \"NBLignes=[int]\" got " + buffer);
+                                       strMultiCat(4, "Syntax error at line ", fileLineCounter, ", expected \"NBLignes=[int]\" got ", buffer));
                     }
                     break;
                 // NBColonnes=[int]
                 case 2:
-                    if (sscanf(buffer, "NBColonnes=%d", matrixColumnCounter) == 0) {
+                    if (sscanf(buffer, "NBColonnes=%d", &matrixColumnCounter) == 0) {
                         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
-                                       "Syntax error at line " + fileLineCounter + ", expected \"NBColonnes=[int]\" got " + buffer);
+                                       strMultiCat(4, "Syntax error at line ", fileLineCounter, ", expected \"NBColonnes=[int]\" got ", buffer));
                     }
                     break;
                 // Matrice=[
                 case 3:
-                    if (buffer != "Matrice=[") {
+                    if (strcmp(buffer, "Matrice=[") != 0) {
                         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
-                                       "Syntax error at line " + fileLineCounter + ", expected \"Matrice=[\" got " + buffer);
+                                       strMultiCat(4, "Syntax error at line ", fileLineCounter, ", expected \"Matrice=[\" got ", buffer));
                     }
                     break;
                 // Lines with double separated with spaces or last line (])
                 // There should be the same number of double in a line than the "NBColonnes" field plus,
                 // There sould be the same number of lines than the "NBLignes" field
                 default:
-                    if (buffer == "]") {
+                    if (strcmp(buffer, "]") == 0) {
                         // If the number of rows declared is inconsistent with the actual number of
                         // rows, we throw an exception
                         if (actualMatrixLineCounter != matrixLineCounter) {
                             throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_INCONSISTENT_LINE_AMOUNT,
-                                       "Syntax error at line " + fileLineCounter + ", Expected " + matrixLineCounter + " amount of lines, "
-                                       "declared " actualMatrixLineCounter)
+                                       strMultiCat(7, "Syntax error at line ", fileLineCounter, ", Expected ", matrixLineCounter, " amount of lines, "
+                                       "declared ", actualMatrixLineCounter));
                         }
                     } else {
                         int i = 0;
                         int actualDoubleIndex = 0;
-                        char[100] actualDouble;
+                        char actualDouble[100];
                         actualMatrixColumnCounter = 0;
-                        while (buffer[i] != "\n") {
+                        while (buffer[i] != '\n') {
                             // If the number of columns declared is inconsistent with the actual number of
                             // columns, we throw an exception
                             if (actualMatrixColumnCounter > matrixColumnCounter) {
                                 throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_INCONSISTENT_COLUMN_AMOUNT,
-                                           "Syntax error at line " + fileLineCounter + ", Expected " + matrixColumnCounter + " amount of columns, "
-                                           "declared " actualMatrixColumnCounter)
+                                           strMultiCat(7, "Syntax error at line ", fileLineCounter,  ", Expected ", matrixColumnCounter, " amount of columns, "
+                                           "declared ", actualMatrixColumnCounter));
                             }
                             // If the character is a space, we increment the number of analyzed columns then,
                             // We update the matrix item with the previous analyzed number
-                            if (buffer[i] == " ") {
-                                actualDouble[actualDoubleIndex] = "\0";
-                                double matrixItem = stod(actualDouble);
+                            if (buffer[i] == ' ') {
+                                actualDouble[actualDoubleIndex] = '\0';
+                                double matrixItem = std::stod(actualDouble);
                                 // TODO UPDATE MATRIX ITEM
                                 actualDoubleIndex = 0;
                                 actualMatrixColumnCounter++;
                             } else {
-                                if (buffer[i] == "." || buffer[i] == "-" || isdigit(buffer[i])) {
+                                if (buffer[i] == '.' || buffer[i] == '-' || isdigit(buffer[i])) {
                                     actualDouble[actualDoubleIndex] = buffer[i];
                                     actualDoubleIndex++;
                                 } else {
                                     throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
-                                               "Syntax error at line " + fileLineCounter +
-                                               ", Unexpected character " + buffer[i] + ", expected number");
+                                               strMultiCat(5, "Syntax error at line ", fileLineCounter,
+                                               ", Unexpected character ", buffer[i], ", expected number"));
                                 }
                             }
                             i++;
@@ -146,17 +146,17 @@ int CMatrixReader::MARRead() {
             fileLineCounter++;
         }
     } else {
-        throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_NO_SUCH_FILE, "No such file " + this->MARGetFilename());
+        throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_NO_SUCH_FILE, strMultiCat(2, "No such file ", this->MARGetFilename()));
     }
 }
 
 FILE* CMatrixReader::MARGetFile() {
-    FILE* file = fopen(this->pMARFilename);
+    FILE* file = fopen(this->pMARFilename, "r");
     return file;
 }
 
-inline int CMatrixReader::MARGetFilename() {
-
+inline const char* CMatrixReader::MARGetFilename() {
+    return this->pMARFilename;
 }
 
 

@@ -3,10 +3,11 @@
 
 template<typename T = double>
 class CMatrix {
-    public:
+
+public:
     CMatrix(T** pMATItems, int iMATLines, int iMATColumns);
     CMatrix(const CMatrix<T> &matrix);
-    ~CMatrix();
+    ~CMatrix() = default;
     CMatrix<T> MATTranspose(CMatrix<T> matrix);
     CMatrix<T> operator-(const CMatrix<T> &matrix);
     CMatrix<T> operator+(const CMatrix<T> &matrix);
@@ -21,7 +22,7 @@ class CMatrix {
     void MATPrint();
 
 
-    protected:
+protected:
     int iMATLines;
     int iMATColumns;
     T** pMATItems;

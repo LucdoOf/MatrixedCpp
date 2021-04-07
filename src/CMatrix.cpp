@@ -14,12 +14,7 @@ CMatrix<T>::CMatrix(const CMatrix<T> &matrix){
     this->pMATItems = matrix.pMATItems;
     this->iMATColumns = matrix.iMATColumns;
     this->iMATLines = matrix.iMATLines;
-};
-
-template<typename T>
-CMatrix<T>::~CMatrix(){
-
-};
+}
 
 template<typename T>
 CMatrix<T> CMatrix<T>::MATTranspose(CMatrix<T> matrix){

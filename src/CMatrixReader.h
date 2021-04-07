@@ -6,25 +6,28 @@
 #include <string.h>
 #include "defines.h"
 #include <ctype.h>
+#include <stdlib.h>
+#include "CMatrix.h"
+#include "string_utils.h"
+#include <string>
+
 
 #ifndef MATRIXEDCPP_CMATRIXREADER_H
 #define MATRIXEDCPP_CMATRIXREADER_H
 
-
 class CMatrixReader {
 
 private:
-    char* pMARFilename;
+    const char* pMARFilename;
     FILE* MARGetFile();
 
 public:
-    CMatrixReader(char* filename);
-    CMatrixReader(const CMatrixReader reader);
+    explicit CMatrixReader(const char* filename);
+    CMatrixReader(CMatrixReader const &reader);
     ~CMatrixReader();
-    MARRead();
-    inline MARGetFilename();
+    CMatrix<double> MARRead();
+    inline const char* MARGetFilename();
 
 };
-
 
 #endif //MATRIXEDCPP_CMATRIXREADER_H
