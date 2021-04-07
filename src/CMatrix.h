@@ -7,7 +7,8 @@ class CMatrix {
 public:
     CMatrix(T** pMATItems, int iMATLines, int iMATColumns);
     CMatrix(const CMatrix<T> &matrix);
-    ~CMatrix() = default;
+    CMatrix(int iMATLines, int iMATColumns);
+    ~CMatrix();
     CMatrix<T> MATTranspose(CMatrix<T> matrix);
     CMatrix<T> operator-(const CMatrix<T> &matrix);
     CMatrix<T> operator+(const CMatrix<T> &matrix);
