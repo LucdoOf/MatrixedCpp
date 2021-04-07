@@ -37,9 +37,11 @@ CMatrixReader::~CMatrixReader() {
  * @throw CMatrixException if no file have been found or if the matrix is not of of the type double
  * @return
  */
-CMatrix<double> CMatrixReader::MARRead() {
+CMatrix<double>* CMatrixReader::MARRead() {
     FILE* file = this->MARGetFile();
     if (file) {
+        // Current matrix
+        CMatrix<double> *matrix;
         // Buffer used to read the file
         int bufferLength = 255;
         char buffer[bufferLength];
@@ -94,6 +96,7 @@ CMatrix<double> CMatrixReader::MARRead() {
                         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT,
                                        strMultiCat(4, "Syntax error at line ", itoa(fileLineCounter), R"(, expected "Matrice=[\n" got )", buffer));
                     }
+                    matrix = new CMatrix<double>(matrixLineCounter, matrixColumnCounter);
                     break;
                 // Lines with double separated with spaces or last line (])
                 // There should be the same number of double in a line than the "NBColonnes" field plus,
@@ -107,8 +110,7 @@ CMatrix<double> CMatrixReader::MARRead() {
                                        strMultiCat(6, "Syntax error at line ", itoa(fileLineCounter), ", Expected an amount of ", itoa(matrixLineCounter), " lines, "
                                        "declared ", itoa(actualMatrixLineCounter)));
                         } else {
-                            printf("\nOK\n");
-                            exit(0);
+                            return matrix;
                         }
                     } else {
                         int i = 0;
@@ -127,8 +129,8 @@ CMatrix<double> CMatrixReader::MARRead() {
                             // We update the matrix item with the previous analyzed number
                             if (buffer[i] == ' ') {
                                 actualDouble[actualDoubleIndex] = '\0';
-                                double matrixItem = std::stod(actualDouble);
-                                // TODO UPDATE MATRIX ITEM
+                                double matrixItem = atof(actualDouble);
+                                matrix->MATSetItemAt(actualMatrixLineCounter, actualMatrixColumnCounter, matrixItem);
                                 actualDoubleIndex = 0;
                                 actualMatrixColumnCounter++;
                             } else {
@@ -147,7 +149,7 @@ CMatrix<double> CMatrixReader::MARRead() {
                         if (actualMatrixColumnCounter < matrixColumnCounter) {
                             throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_INCONSISTENT_COLUMN_AMOUNT,
                                                    strMultiCat(6, "Syntax error at line ", itoa(fileLineCounter),  ", Expected an amount of ", itoa(matrixColumnCounter), " columns, "
-                                                                                                                                                                          "declared ", itoa(actualMatrixColumnCounter)));
+                                                          "declared ", itoa(actualMatrixColumnCounter)));
                         }
                         actualMatrixLineCounter++;
                     }

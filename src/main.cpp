@@ -2,7 +2,7 @@
 #include "CMatrixReader.h"
 
 int main(){
-    int** a = new int*[2];
+    /**int** a = new int*[2];
 
     for(int i = 0; i < 2; i++)
         a[i] = new int[2];
@@ -10,7 +10,7 @@ int main(){
             a[i][j] = 1;
         }
     }**/
-    a[0][0] = 1;
+    /**a[0][0] = 1;
     a[0][1] = 1;
     a[1][0] = 0;
     a[1][1] = 1;
@@ -23,7 +23,7 @@ int main(){
         a[i][j] = 1;
     }
 }**/
-    b[0][0] = 0;
+    /**b[0][0] = 0;
     b[0][1] = 0;
     b[1][0] = 0;
     b[1][1] = 2;
@@ -36,5 +36,9 @@ int main(){
     //MAT1->MATSetItemAt(0,0, 0);
     //printf("%d",MAT1->MATGetColumns());
     MAT1->MATPrint();
-    MATResult.MATPrint();
+    MATResult.MATPrint();**/
+    CMatrixReader reader = CMatrixReader("/home/lucas/Développement/Cpp/Polytech/MatrixedCpp/tests/matrix_1.txt");
+    CMatrix<double>* result = reader.MARRead();
+    printf("\n%f\n", result->MATGetItemAt(2, 0));
+    result->MATPrint();
 }

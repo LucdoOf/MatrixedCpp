@@ -26,7 +26,7 @@ public:
     explicit CMatrixReader(const char* filename);
     CMatrixReader(CMatrixReader const &reader);
     ~CMatrixReader();
-    CMatrix<double> MARRead();
+    CMatrix<double>* MARRead();
     inline const char* MARGetFilename();
 
 };
