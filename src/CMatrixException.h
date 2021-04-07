@@ -14,6 +14,10 @@ public:
     ~CMatrixException() override = default;
     const char* what() const noexcept override;
 
+private:
+    char* message;
+    int errorCode;
+
 };
 
 

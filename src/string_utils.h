@@ -11,4 +11,12 @@
 
 char* strMultiCat(int count, ...);
 
+char* itoa(int num);
+
+char* reverse(char *buffer, int i, int j);
+
+inline void swap(char *x, char *y);
+
+char * strSafeCat(char *s1, const char *s2);
+
 #endif //MATRIXEDCPP_STRING_UTILS_H
