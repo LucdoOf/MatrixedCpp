@@ -1,32 +1,27 @@
 #ifndef MATRIXEDCPP_CMATRIX_H
 #define MATRIXEDCPP_CMATRIX_H
 
-#include <iostream>
+#include <malloc.h>
+#include "stdio.h"
 
-template<typename T>
+template<typename T = double>
 class CMatrix {
 
 public:
-    // Constructors + Destructors
     CMatrix(T** pMATItems, int iMATLines, int iMATColumns);
     CMatrix(const CMatrix<T> &matrix);
     CMatrix(int iMATLines, int iMATColumns);
     ~CMatrix();
-    // Operators
-    CMatrix<T> operator-(const CMatrix<T> &matrix);
-    CMatrix<T> operator+(const CMatrix<T> &matrix);
-    CMatrix<T> operator*(const CMatrix<T> &matrix);
-    CMatrix<T> operator*(const float multiplier);
-    CMatrix<T> operator*(const int multiplier);
-    CMatrix<T> operator*(const double multiplier);
-    // Methods
-    CMatrix<T> MATTranspose(CMatrix<T> matrix);
-    T MATGetItemAt(int line, int column);
+    CMatrix<T> MATTranspose();
+    CMatrix<T> operator-(CMatrix<T> matrix);
+    CMatrix<T> operator+(CMatrix<T> matrix);
+    CMatrix<T> operator*(CMatrix<T> matrix);
+    CMatrix<T> operator*(double multiplier);
+    const T MATGetItemAt(int line, int column);
     void MATSetItemAt(int line, int column, T item);
-    void MATPrint();
-    // Getters
     int MATGetLines();
     int MATGetColumns();
+    void MATPrint();
 
 
 protected:
@@ -55,113 +50,100 @@ CMatrix<T>::CMatrix(const CMatrix<T> &matrix){
 //Constructeur qui initialise à 0
 template<typename T>
 CMatrix<T>::CMatrix(int iMATLines, int iMATColumns) {
+    this->iMATLines = iMATLines;
+    this->iMATColumns = iMATColumns;
+    this->pMATItems = (T**) malloc(sizeof(T*)*iMATLines);
+    for(int h = 0; h < iMATLines; h++){
+        this->pMATItems[h] = (T *)malloc(sizeof(T*) * iMATColumns);
+    }
     for(int i = 0; i < iMATLines; i++){
         for(int j = 0; j < iMATColumns; j++){
-            this->MATSetItemAt(i,j, 0);
+            this->MATSetItemAt(i , j, 0);
         }
     }
 }
 
 //Destructeur
 template<typename T>
-CMatrix<T>::~CMatrix() {
+CMatrix<T>::~CMatrix(){
 }
 
 //Matrice transposée
 template<typename T>
-CMatrix<T> CMatrix<T>::MATTranspose(CMatrix<T> matrix){
-    CMatrix<T> toReturn = new CMatrix<T>(&this);
+CMatrix<T> CMatrix<T>::MATTranspose(){
+    auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
     for(int i = 0; i < this->iMATLines; i++){
         for(int j = 0; j < this->iMATColumns; j++){
-            toReturn.MATSetItemAt(i, j, this->MATGetItemAt(j, i));
+            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(j, i));
         }
     }
+    return *toReturn;
 }
 
 //Surcharge soustraction
 template<typename T>
-CMatrix<T> CMatrix<T>::operator-(const CMatrix<T> &matrix){
+CMatrix<T> CMatrix<T>::operator-(CMatrix<T> matrix){
     if(matrix.iMATLines == this->MATGetLines() && matrix.iMATColumns == this->MATGetLines()) {
-        CMatrix<T> toReturn = new CMatrix<T>(&this);
+        auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
         for (int i = 0; i < this->iMATLines; i++) {
-            for (int j = 0; j < this->iMATColumns; j++) {//HERE
-                toReturn.MATSetItemAt(i , j, (this->MATGetItemAt(i, j)) - (matrix->MATGetItemsAt(i, j)));
+            for (int j = 0; j < this->iMATColumns; j++) {
+                toReturn->MATSetItemAt(i , j, this->MATGetItemAt(i, j) - matrix.MATGetItemAt(i, j));
             }
         }
+        return *toReturn;
     } //else throw CMatrixExeception(//TODO);
+
 }
 
 //Surcharge addition
 template<typename T>
-CMatrix<T> CMatrix<T>::operator+(const CMatrix<T> &matrix){
+CMatrix<T> CMatrix<T>::operator+(CMatrix<T> matrix){
     if(matrix.iMATLines == this->MATGetLines() && matrix.iMATColumns == this->MATGetLines()) {
-        CMatrix<T> toReturn = new CMatrix<T>(&this);
+        auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
         for (int i = 0; i < this->iMATLines; i++) {
-            for (int j = 0; j < this->iMATColumns; j++) {//HERE
-                toReturn.MATSetItemAt(i , j, (this->MATGetItemAt(i, j)) + (matrix->MATGetItemsAt(i, j)));
+            for (int j = 0; j < this->iMATColumns; j++) {
+                toReturn->MATSetItemAt(i , j, (this->MATGetItemAt(i, j)) + (matrix.MATGetItemAt(i, j)));
             }
         }
+        return *toReturn;
     } //else throw CMatrixExeception(//TODO);
 }
 
 //Surcharge multiplication par une matrice
 template<typename T>
-CMatrix<T> CMatrix<T>::operator*(const CMatrix<T> &matrix){
+CMatrix<T> CMatrix<T>::operator*(CMatrix<T> matrix){
     if(matrix.iMATColumns == this->MATGetLines() && matrix.iMATLines == this->MATGetColumns()) {
-        CMatrix<T> toReturn = new CMatrix<T>(this->MATGetLines(), matrix->MATGetColumns());
+        auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
         for (int i = 0; i < this->iMATLines; i++) {
-            for (int j = 0; j < matrix->MATGetColumns(); j++) {
+            for (int j = 0; j < matrix.MATGetColumns(); j++) {
                 for(int k = 0; k < this->MATGetColumns(); ++k) {
-                    toReturn.MATSetItemAt(i , j, toReturn.MATGetItemAt(i, j) + (this->MATGetItemAt(i, k)) * (matrix->MATGetItemsAt(k, j)));
-                    //mult[i][j] += a[i][k] * b[k][j];
+                    toReturn->MATSetItemAt(i , j, toReturn->MATGetItemAt(i, j) + (this->MATGetItemAt(i, k)) * (matrix.MATGetItemAt(k, j)));
                 }
             }
         }
+        return *toReturn;
     }
 }
 
-//Surcharge mumtiplication par un réel
-template<typename T>
-CMatrix<T> CMatrix<T>::operator*(const float multiplier){
-    CMatrix<T> toReturn = new CMatrix<T>(&this);
-    for(int i = 0; i < this->iMATLines; i++){
-        for(int j = 0; j < this->iMATColumns; j++){
-            toReturn.MATSetItemAt(i, j, this->MATGetItemAt(i, j) * multiplier);
-        }
-    }
-}
-
-//Surcharge mumtiplication par un entier
-template<typename T>
-CMatrix<T> CMatrix<T>::operator*(const int multiplier){
-    CMatrix<T> toReturn = new CMatrix<T>(&this);
-    for(int i = 0; i < this->iMATLines; i++){
-        for(int j = 0; j < this->iMATColumns; j++){
-            toReturn.MATSetItemAt(i, j, this->tMATGetItemAt(i, j) * multiplier);
-        }
-    }
-}
-
-//Surcharge mumtiplication par un double
+//Surcharge mumtiplication par un nombre
 template<typename T> //HERE
 CMatrix<T> CMatrix<T>::operator*(const double multiplier){
-    CMatrix<T> toReturn = new CMatrix<T>(&this);
+    auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
     for(int i = 0; i < this->iMATLines; i++){
         for(int j = 0; j < this->iMATColumns; j++){
-            toReturn.MATSetItemAt(i, j, this->MATGetItemAt(i, j) * multiplier);
+            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(i, j) * (T)multiplier);
         }
     }
+    return *toReturn;
 }
 
 template<typename T>
-inline T CMatrix<T>::MATGetItemAt(int line, int column){
-    //HERE
+const inline T CMatrix<T>::MATGetItemAt(int line, int column){
     return *( *(this->pMATItems + line) + column);
 }
 
 template<typename T>
 inline void CMatrix<T>::MATSetItemAt(int line, int column, T item){
-    //HERE
     *( *(this->pMATItems + line) + column) = item;
 }
 
@@ -178,11 +160,13 @@ inline int CMatrix<T>::MATGetColumns(){
 template<typename T>
 void CMatrix<T>::MATPrint(){
     for(int i = 0; i < this->iMATLines; i++){
-        std::cout << std::endl;
+        printf("\n");
         for(int j = 0; j < this->iMATColumns; j++){
-            std::cout << this->MATGetItemAt(i, j) + " ";
+            printf("%d ",this->MATGetItemAt(i, j));
         }
     }
+    printf("\n");
 }
+
 
 #endif //MATRIXEDCPP_CMATRIX_H
