@@ -2,7 +2,7 @@
 #define MATRIXEDCPP_CMATRIX_H
 
 #include <malloc.h>
-#include "stdio.h"
+#include <stdio.h>
 
 template<typename T = double>
 class CMatrix {
@@ -19,8 +19,10 @@ public:
     CMatrix<T> operator*(double multiplier);
     const T MATGetItemAt(int line, int column);
     void MATSetItemAt(int line, int column, T item);
-    int MATGetLines();
+    virtual int MATGetLines();
     int MATGetColumns();
+
+    virtual void MATPrintItem(T const& item);
     void MATPrint();
 
 
@@ -158,11 +160,16 @@ inline int CMatrix<T>::MATGetColumns(){
 }
 
 template<typename T>
+void CMatrix<T>::MATPrintItem(T const& item){
+
+}
+
+template<typename T>
 void CMatrix<T>::MATPrint(){
     for(int i = 0; i < this->iMATLines; i++){
         printf("\n");
         for(int j = 0; j < this->iMATColumns; j++){
-            printf("%d ",this->MATGetItemAt(i, j));
+            MATPrintItem(this->MATGetItemAt(i, j));
         }
     }
     printf("\n");
