@@ -16,5 +16,4 @@ private:
 
 };
 
-
 #endif //MATRIXEDCPP_CMATRIXEXCEPTION_H

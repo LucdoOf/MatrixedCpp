@@ -16,44 +16,43 @@ int main(int argc, char** argv){
     }
 
     int c = 0;
+    printf("\n");
     std::cout << "Veuillez saisir un nombre c" << std::endl;
     std::cin >> c;
-    auto toReturn = new CMatrix<double>(matrixTable[0]->MATGetLines(), matrixTable[0]->MATGetColumns());
     printf("\n");
 
-    std::cout << "Multiplication de chaque matrices par c:" << std::endl;
+    std::cout << "================= Multiplication de chaque matrices par c: =================" << std::endl;
     for(int i = 0; i < matrixTableLength; i++){
-        std::cout << "Matrice " << i+1 << " : " << std::endl;
+        printf("\n");
+        std::cout << "Matrice " << i+1 << ": " << std::endl;
         ((*matrixTable[i]) * c).MATPrint();
-        *toReturn = *(matrixTable[i]) * c;
-        toReturn->MATPrint();
     }
 
-    std::cout << "Division de chaque matrices par c:" << std::endl;
+    std::cout << "================= Division de chaque matrices par c: =================" << std::endl;
     for(int i = 0; i < matrixTableLength; i++){
+        printf("\n");
         std::cout << "Matrice " << i+1 << " : " << std::endl;
-        *toReturn = *matrixTable[i]/c;
-        toReturn->MATPrint();
+        ((*matrixTable[i]) / c).MATPrint();
     }
 
-    std::cout << "Addition de chaque matrices entre elles:" << std::endl;
-    *toReturn = *matrixTable[0];
+    std::cout << "================= Addition de chaque matrices entre elles: =================" << std::endl;
+    auto tempMatrix1 = new CMatrix<double>(*matrixTable[0]);
     for(int i = 1; i < matrixTableLength; i++){
-        *toReturn = *toReturn + *matrixTable[i];
+        *tempMatrix1 = *tempMatrix1 + *matrixTable[i];
     }
-    toReturn->MATPrint();
+    tempMatrix1->MATPrint();
 
-    std::cout << "Addition alternée de chaque matrices entre elles:" << std::endl;
-    *toReturn = *matrixTable[0];
+    std::cout << "================= Addition alternée de chaque matrices entre elles: =================" << std::endl;
+    auto tempMatrix2 = new CMatrix<double>(*matrixTable[0]);
     for(int i = 1; i < matrixTableLength; i++){
-        *toReturn = *toReturn + ( (*matrixTable[i]) * ((-1)^i) );
+        *tempMatrix2 = *tempMatrix2 + ( (*matrixTable[i]) * ((-1)^i) );
     }
-    toReturn->MATPrint();
+    tempMatrix2->MATPrint();
 
-    std::cout << "Produit de chaque matrices entre elles:" << std::endl;
-    *toReturn = *matrixTable[0];
+    std::cout << "================= Produit de chaque matrices entre elles: =================" << std::endl;
+    auto tempMatrix3 = new CMatrix<double>(*matrixTable[0]);
     for(int i = 1; i < matrixTableLength; i++){
-        *toReturn = *toReturn * *matrixTable[i];
+        *tempMatrix3 = *tempMatrix3 * *matrixTable[i];
     }
-    toReturn->MATPrint();
+    tempMatrix3->MATPrint();
 }
