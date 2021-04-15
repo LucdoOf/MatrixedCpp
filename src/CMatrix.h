@@ -3,8 +3,10 @@
 
 #include <malloc.h>
 #include <stdio.h>
+#include <iostream>
+#include "CMatrixException.h"
 
-template<typename T = double>
+template<typename T>
 class CMatrix {
 
 public:
@@ -17,14 +19,12 @@ public:
     CMatrix<T> operator+(CMatrix<T> matrix);
     CMatrix<T> operator*(CMatrix<T> matrix);
     CMatrix<T> operator*(double multiplier);
-    const T MATGetItemAt(int line, int column);
+    CMatrix<T> operator/(double multiplier);
+    T MATGetItemAt(int line, int column);
     void MATSetItemAt(int line, int column, T item);
-    virtual int MATGetLines();
+    int MATGetLines();
     int MATGetColumns();
-
-    virtual void MATPrintItem(T const& item);
     void MATPrint();
-
 
 protected:
     int iMATLines;
@@ -56,7 +56,7 @@ CMatrix<T>::CMatrix(int iMATLines, int iMATColumns) {
     this->iMATColumns = iMATColumns;
     this->pMATItems = (T**) malloc(sizeof(T*)*iMATLines);
     for(int h = 0; h < iMATLines; h++){
-        this->pMATItems[h] = (T *)malloc(sizeof(T*) * iMATColumns);
+        this->pMATItems[h] = (T *) malloc(sizeof(T*) * iMATColumns);
     }
     for(int i = 0; i < iMATLines; i++){
         for(int j = 0; j < iMATColumns; j++){
@@ -68,18 +68,22 @@ CMatrix<T>::CMatrix(int iMATLines, int iMATColumns) {
 //Destructeur
 template<typename T>
 CMatrix<T>::~CMatrix(){
+    for(int i = 0; i < iMATLines; i++){
+        free(this->pMATItems[i]);
+    }
+    free(this->pMATItems);
 }
 
 //Matrice transposée
 template<typename T>
 CMatrix<T> CMatrix<T>::MATTranspose(){
-    auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
+    CMatrix<T> toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
     for(int i = 0; i < this->iMATLines; i++){
         for(int j = 0; j < this->iMATColumns; j++){
-            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(j, i));
+            toReturn.MATSetItemAt(i, j, this->MATGetItemAt(j, i));
         }
     }
-    return *toReturn;
+    return &toReturn;
 }
 
 //Surcharge soustraction
@@ -93,8 +97,7 @@ CMatrix<T> CMatrix<T>::operator-(CMatrix<T> matrix){
             }
         }
         return *toReturn;
-    } //else throw CMatrixExeception(//TODO);
-
+    } else throw CMatrixException(MATRIX_EXCEPTION_INCONSISTENT_DIMENSIONS, "Matrix dimensions must be the same for soustraction");
 }
 
 //Surcharge addition
@@ -108,7 +111,7 @@ CMatrix<T> CMatrix<T>::operator+(CMatrix<T> matrix){
             }
         }
         return *toReturn;
-    } //else throw CMatrixExeception(//TODO);
+    } else throw CMatrixException(MATRIX_EXCEPTION_INCONSISTENT_DIMENSIONS, "Matrix dimensions must be the same for addition");
 }
 
 //Surcharge multiplication par une matrice
@@ -124,23 +127,35 @@ CMatrix<T> CMatrix<T>::operator*(CMatrix<T> matrix){
             }
         }
         return *toReturn;
+    } else {
+        throw CMatrixException(MATRIX_EXCEPTION_INCONSISTENT_DIMENSIONS, "Matrix dimensions incompatibles for multiplication");
     }
 }
 
 //Surcharge mumtiplication par un nombre
-template<typename T> //HERE
+template<typename T>
 CMatrix<T> CMatrix<T>::operator*(const double multiplier){
     auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
     for(int i = 0; i < this->iMATLines; i++){
         for(int j = 0; j < this->iMATColumns; j++){
-            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(i, j) * (T)multiplier);
+            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(i, j) * multiplier);
         }
     }
     return *toReturn;
 }
 
+//Surcharge division par un nombre
 template<typename T>
-const inline T CMatrix<T>::MATGetItemAt(int line, int column){
+CMatrix<T> CMatrix<T>::operator/(const double divider) {
+    if(divider != 0) {
+        return operator* ((1 / divider));
+    } else {
+        throw CMatrixException(MATRIX_EXCEPTION_INCONSISTENT_ARITHMETIC, "Dividing by zero is not allowed");
+    }
+}
+
+template<typename T>
+inline T CMatrix<T>::MATGetItemAt(int line, int column){
     return *( *(this->pMATItems + line) + column);
 }
 
@@ -150,30 +165,20 @@ inline void CMatrix<T>::MATSetItemAt(int line, int column, T item){
 }
 
 template<typename T>
-inline int CMatrix<T>::MATGetLines(){
-    return this->iMATLines;
-}
+inline int CMatrix<T>::MATGetLines(){ return this->iMATLines; }
 
 template<typename T>
-inline int CMatrix<T>::MATGetColumns(){
-    return this->iMATColumns;
-}
-
-template<typename T>
-void CMatrix<T>::MATPrintItem(T const& item){
-
-}
+inline int CMatrix<T>::MATGetColumns(){ return this->iMATColumns; }
 
 template<typename T>
 void CMatrix<T>::MATPrint(){
     for(int i = 0; i < this->iMATLines; i++){
         printf("\n");
         for(int j = 0; j < this->iMATColumns; j++){
-            MATPrintItem(this->MATGetItemAt(i, j));
+            std::cout << this->MATGetItemAt(i, j) << " ";
         }
     }
     printf("\n");
 }
-
 
 #endif //MATRIXEDCPP_CMATRIX_H
