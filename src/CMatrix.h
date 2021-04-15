@@ -2,7 +2,6 @@
 #define MATRIXEDCPP_CMATRIX_H
 
 #include <malloc.h>
-#include <stdio.h>
 #include <iostream>
 #include "CMatrixException.h"
 #include "defines.h"
@@ -45,9 +44,17 @@ CMatrix<T>::CMatrix(T** pMATItems, int iMATLines, int iMATColumns){
 //Constructeur de recopie
 template<typename T>
 CMatrix<T>::CMatrix(const CMatrix<T> &matrix){
-    this->pMATItems = matrix.pMATItems;
     this->iMATColumns = matrix.iMATColumns;
     this->iMATLines = matrix.iMATLines;
+    this->pMATItems = (T**) malloc(sizeof(T*)*iMATLines);
+    for(int h = 0; h < iMATLines; h++){
+        this->pMATItems[h] = (T *) malloc(sizeof(T*) * iMATColumns);
+    }
+    for(int i = 0; i < iMATLines; i++){
+        for(int j = 0; j < iMATColumns; j++){
+            this->MATSetItemAt(i, j, matrix.pMATItems[i][j]);
+        }
+    }
 }
 
 //Constructeur qui initialise à 0
@@ -173,10 +180,11 @@ inline int CMatrix<T>::MATGetColumns(){ return this->iMATColumns; }
 
 template<typename T>
 void CMatrix<T>::MATPrint(){
+    std::cout.precision(4);
     for(int i = 0; i < this->iMATLines; i++){
         printf("\n");
         for(int j = 0; j < this->iMATColumns; j++){
-            std::cout << this->MATGetItemAt(i, j) << " ";
+            std::cout << std::fixed << this->MATGetItemAt(i, j) << " ";
         }
     }
     printf("\n\n");

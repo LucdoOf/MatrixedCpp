@@ -1,5 +1,6 @@
 #include "CMatrix.h"
 #include "CMatrixReader.h"
+#include <iostream>
 
 int main(int argc, char** argv){
     if (argc <= 1) {
@@ -14,7 +15,7 @@ int main(int argc, char** argv){
         delete reader;
     }
 
-    double c = 0;
+    int c = 0;
     std::cout << "Veuillez saisir un nombre c" << std::endl;
     std::cin >> c;
     auto toReturn = new CMatrix<double>(matrixTable[0]->MATGetLines(), matrixTable[0]->MATGetColumns());
@@ -22,12 +23,15 @@ int main(int argc, char** argv){
 
     std::cout << "Multiplication de chaque matrices par c:" << std::endl;
     for(int i = 0; i < matrixTableLength; i++){
-        *toReturn = *matrixTable[i]*c;
+        std::cout << "Matrice " << i+1 << " : " << std::endl;
+        ((*matrixTable[i]) * c).MATPrint();
+        *toReturn = *(matrixTable[i]) * c;
         toReturn->MATPrint();
     }
 
     std::cout << "Division de chaque matrices par c:" << std::endl;
     for(int i = 0; i < matrixTableLength; i++){
+        std::cout << "Matrice " << i+1 << " : " << std::endl;
         *toReturn = *matrixTable[i]/c;
         toReturn->MATPrint();
     }
