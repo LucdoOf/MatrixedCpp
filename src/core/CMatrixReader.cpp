@@ -156,8 +156,8 @@ CMatrix<double>* CMatrixReader::MARRead() {
         throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_WRONG_FILE_FORMAT, "File is not complete");
     } else {
         // If file is null, then the fopen call failed and the file is not readable / does not exist
-        throw CMatrixException(MATRIX_EXCEPTION_DESERIALIZATION_NO_SUCH_FILE, strMultiCat(3,
-                       "No such file ", this->MARGetFilename(), " (or the file is not readable by the program)"));
+        throw CMatrixException(MATRIX_EXCEPTION_NO_SUCH_FILE, strMultiCat(3,
+                                                                          "No such file ", this->MARGetFilename(), " (or the file is not readable by the program)"));
     }
 }
 

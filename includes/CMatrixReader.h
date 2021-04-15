@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include "CMatrix.h"
 #include "string_utils.h"
-#include <string>
 
 /**
  * CMatrixReader class
@@ -54,7 +53,9 @@ public:
      */
     CMatrixReader(CMatrixReader const &reader);
     /**
-     * Close the reader file if it opened then destroy it
+     * CMatrixReader destructor
+     *
+     * Close the reader file if it is opened and then destroy it
      */
     ~CMatrixReader();
     /**

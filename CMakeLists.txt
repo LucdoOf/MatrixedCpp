@@ -3,15 +3,15 @@ project(MatrixedCpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(src)
+include_directories(includes)
 
 add_executable(MatrixedCpp
-        src/CMatrix.h
-        src/CMatrixException.cpp
-        src/CMatrixException.h
-        src/CMatrixReader.cpp
-        src/CMatrixReader.h
-        src/defines.h
+        includes/CMatrix.h
+        src/utils/CMatrixException.cpp
+        includes/CMatrixException.h
+        src/core/CMatrixReader.cpp
+        includes/CMatrixReader.h
+        includes/defines.h
         src/main.cpp
-        src/string_utils.cpp
-        src/string_utils.h)
+        src/utils/string_utils.cpp
+        includes/string_utils.h)
