@@ -4,18 +4,27 @@
 
 #include "string_utils.h"
 #include <cstdio>
-#include <iostream>
 
+/**
+ * Merge vargs strings into one newly allocated string
+ *
+ * @param count Number of strings given in vargs
+ * @param ... Strings to merge
+ * @return vargs merged into one string
+ */
 char* strMultiCat(int count, ...) {
+    // Initialize vargs objects
     va_list ap;
     va_start(ap, count);
-    unsigned long toReturnSize = sizeof(char *);
-    char* toReturn = (char*) malloc(toReturnSize);
+    // Size of the returned string
+    char* toReturn = (char*) malloc(sizeof (char*));
+
+    // Loop through the vargs
     for (int i = 0; i < count; i++) {
+        // Retrieve the vargs string at position i
         char* string = va_arg(ap, char*);
+        // Prevent NPTR exceptions
         if (string == nullptr) continue;
-        int stringSize = (int) sizeof(string);
-        toReturnSize += stringSize + sizeof(char);
 
         /**
             __________████████_____██████
@@ -61,7 +70,7 @@ char* strMultiCat(int count, ...) {
         /**/                                                                                                        /**/
         /**/                                          /**   @marabou  **/                                           /**/
         /**/                                                                                                        /**/
-        /**/                  printf("C++ C'EST DE LA MERDE ET LE CODE PLANTE SANS CE PRINTF :)");           /**/
+        /**/                 printf("C++ C'EST DE LA MERDE ET LE CODE PLANTE SANS CE PRINTF :)");            /**/
         /**/                                                                                                        /**/
         /**/                                          /**   @marabou  **/                                           /**/
         /**/                                                                                                        /**/
@@ -107,73 +116,50 @@ char* strMultiCat(int count, ...) {
             ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█
          */
 
+        // Cat the previous string with the actual string using safeCat method to handle memory overflow issues
         toReturn = strSafeCat(toReturn, string);
     }
+
+    // Close the vargs stream and return the final string
     va_end(ap);
     return toReturn;
 }
 
+/**
+ * Allocate a string and fill it with the given int
+ *
+ * @param num Int that will be converted to string
+ * @return String containing the given int
+ */
 char * strSafeCat(char *s1, const char *s2) {
+    // Prevent NPTR exceptions
     if (s2 == nullptr) return s1;
 
-    const size_t a = strlen(s1);
-    const size_t b = strlen(s2);
-    const size_t size_ab = a + b + 1;
+    const size_t s1Length = strlen(s1);
+    const size_t s2Length = strlen(s2);
+    const size_t totalLength = s1Length + s2Length + 1;
 
-    s1 = (char*) realloc(s1, size_ab);
+    // Re-allocate s1 to make it long enough for the two strings
+    s1 = (char*) realloc(s1, totalLength);
 
-    memcpy(s1 + a, s2, b + 1);
+    // Copy the content of s2 into the new remaining space of s1
+    memcpy(s1 + s1Length, s2, s2Length + 1);
 
+    // Return the final string
     return s1;
 }
 
-
-// Iterative function to implement itoa() function in C
+/**
+ * Reverse the given string from the character i to the character j
+ *
+ * @param string String to reverse
+ * @param start First character to reverse position
+ * @param end Last character to reverse position
+ * @return The string reversed from the character i to the character j
+ */
 char* itoa(int value) {
-    int base = 10;
     char* buffer = (char*) malloc(sizeof(char) * 100);
-
-    // consider absolute value of number
-    int n = abs(value);
-
-    int i = 0;
-    while (n)
-    {
-        int r = n % base;
-
-        if (r >= 10)
-            buffer[i++] = 65 + (r - 10);
-        else
-            buffer[i++] = 48 + r;
-
-        n = n / base;
-    }
-
-    // if number is 0
-    if (i == 0)
-        buffer[i++] = '0';
-
-    // If base is 10 and value is negative, the resulting string
-    // is preceded with a minus sign (-)
-    // With any other base, value is always considered unsigned
-    if (value < 0 && base == 10)
-        buffer[i++] = '-';
-
-    buffer[i] = '\0'; // null terminate string
-
-    // reverse the string and return it
-    return reverse(buffer, 0, i - 1);
-}
-
-// function to reverse buffer[i..j]
-char* reverse(char *buffer, int i, int j) {
-    while (i < j)
-        swap(&buffer[i++], &buffer[j--]);
-
+    // Print the int value into the buffer
+    sprintf(buffer, "%d", value);
     return buffer;
-}
-
-// inline function to swap two numbers
-inline void swap(char *x, char *y) {
-    char t = *x; *x = *y; *y = t;
 }

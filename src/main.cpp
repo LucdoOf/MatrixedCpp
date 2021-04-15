@@ -1,6 +1,11 @@
 #include "CMatrix.h"
 #include "CMatrixReader.h"
 
+void f() {
+    static int iVar = 0;
+    iVar++;
+}
+
 int main(){
     /**int** a = new int*[2];
 
@@ -39,6 +44,6 @@ int main(){
     MATResult.MATPrint();**/
     CMatrixReader reader = CMatrixReader("/home/lucas/Développement/Cpp/Polytech/MatrixedCpp/tests/matrix_1.txt");
     CMatrix<double>* result = reader.MARRead();
-    printf("\n%f\n", result->MATGetItemAt(2, 0));
+    printf("\n%f\n", result->MATGetItemAt(1, 2));
     result->MATPrint();
 }

@@ -162,7 +162,7 @@ void CMatrix<T>::MATPrint(){
     for(int i = 0; i < this->iMATLines; i++){
         printf("\n");
         for(int j = 0; j < this->iMATColumns; j++){
-            printf("%d ",this->MATGetItemAt(i, j));
+            printf("%f ", this->MATGetItemAt(i, j));
         }
     }
     printf("\n");

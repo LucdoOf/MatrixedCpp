@@ -6,7 +6,7 @@
 #include "CMatrixException.h"
 
 /**
- * CMatrixReader constructor
+ * CMatrixReader default constructor
  *
  * @param filename Path of the serialized matrix file
  */
@@ -20,13 +20,17 @@ CMatrixReader::CMatrixReader(const char *filename) {
  * @param reader Reader model
  */
 CMatrixReader::CMatrixReader(const CMatrixReader &reader) {
-
+    this->pMARFilename = reader.pMARFilename;
 }
 
 /**
- * CMatrixReader destructor
+ * Close the reader file if it opened then destroy it
  */
 CMatrixReader::~CMatrixReader() {
+    if (this->pMARFile != nullptr) {
+        fclose(this->pMARFile);
+        free(this->pMARFile);
+    }
 }
 
 /**
@@ -34,8 +38,8 @@ CMatrixReader::~CMatrixReader() {
  *
  * @warning Currently the library only supports deserialization of double matrix, if an other type is specified, an
  * exception will be thrown
- * @throw CMatrixException if no file have been found or if the matrix is not of of the type double
- * @return
+ * @throw CMatrixException if no file have been found, if the matrix is not of of the type double or the file is mal-formed
+ * @return A fresh new matrix initialized and filled following the reader file instructions
  */
 CMatrix<double>* CMatrixReader::MARRead() {
     FILE* file = this->MARGetFile();
@@ -162,14 +166,25 @@ CMatrix<double>* CMatrixReader::MARRead() {
     }
 }
 
+/**
+ * Opens a file stream if the provided file has not been opened yet,
+ * then returns the provided file as a FILE pointer
+ *
+ * @return
+ */
 FILE* CMatrixReader::MARGetFile() {
-    FILE* file = fopen(this->pMARFilename, "r");
-    return file;
+    if (this->pMARFile == nullptr) {
+        this->pMARFile = fopen(this->pMARFilename, "r");
+    }
+    return this->pMARFile;
 }
 
+/**
+ * Retrieves the reader provided file name
+ *
+ * @return The reader provided file name
+ */
 inline const char* CMatrixReader::MARGetFilename() {
     return this->pMARFilename;
 }
-
-
 
