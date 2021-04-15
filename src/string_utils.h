@@ -1,7 +1,3 @@
-//
-// Created by lucas on 07/04/2021.
-//
-
 #ifndef MATRIXEDCPP_STRING_UTILS_H
 #define MATRIXEDCPP_STRING_UTILS_H
 
