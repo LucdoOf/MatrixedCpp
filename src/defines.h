@@ -1,7 +1,3 @@
-//
-// Created by lucas on 31/03/2021.
-//
-
 #ifndef MATRIXEDCPP_DEFINES_H
 #define MATRIXEDCPP_DEFINES_H
 

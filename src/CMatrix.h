@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "CMatrixException.h"
+#include "defines.h"
 
 template<typename T>
 class CMatrix {

@@ -2,6 +2,7 @@
 #include "CMatrixReader.h"
 
 int main(int argc, char** argv){
+
     CMatrix<double>** matrixTable;
     for (int i = 1; i < argc; i++) {
         auto reader = new CMatrixReader(argv[i]);

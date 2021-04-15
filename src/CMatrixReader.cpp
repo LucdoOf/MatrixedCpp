@@ -1,7 +1,3 @@
-//
-// Created by lucas on 31/03/2021.
-//
-
 #include "CMatrixReader.h"
 #include "CMatrixException.h"
 
