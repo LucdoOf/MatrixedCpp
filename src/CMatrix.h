@@ -179,7 +179,7 @@ void CMatrix<T>::MATPrint(){
             std::cout << this->MATGetItemAt(i, j) << " ";
         }
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 #endif //MATRIXEDCPP_CMATRIX_H

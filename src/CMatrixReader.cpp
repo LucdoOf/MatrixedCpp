@@ -25,7 +25,6 @@ CMatrixReader::CMatrixReader(const CMatrixReader &reader) {
 CMatrixReader::~CMatrixReader() {
     if (this->pMARFile != nullptr) {
         fclose(this->pMARFile);
-        free(this->pMARFile);
     }
 }
 
