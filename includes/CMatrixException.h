@@ -1,9 +1,10 @@
-  #ifndef MATRIXEDCPP_CMATRIXEXCEPTION_H
+#ifndef MATRIXEDCPP_CMATRIXEXCEPTION_H
 #define MATRIXEDCPP_CMATRIXEXCEPTION_H
 
 #include <exception>
 #include <stdio.h>
 #include <cstdlib>
+#include <string.h>
 
 /**
  * CMatrixException class

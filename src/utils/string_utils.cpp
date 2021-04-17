@@ -12,7 +12,7 @@ char* strMultiCat(int count, ...) {
     // Initialize vargs objects
     va_list ap;
     va_start(ap, count);
-    char* toReturn;
+    char* toReturn = (char*) malloc(sizeof(char) * 128);
 
     // Loop through the vargs
     for (int i = 0; i < count; i++) {
@@ -22,7 +22,7 @@ char* strMultiCat(int count, ...) {
         if (string == nullptr) continue;
         // Cat the previous string with the actual string using safeCat method to handle memory overflow issues
         if (!toReturn) {
-            toReturn = string;
+            strcpy(toReturn, string);
         } else {
             toReturn = strSafeCat(toReturn, string);
         }
