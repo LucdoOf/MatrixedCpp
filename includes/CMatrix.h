@@ -234,10 +234,10 @@ CMatrix<T>::~CMatrix(){
  */
 template<typename T>
 CMatrix<T>* CMatrix<T>::MATTranspose(){
-    auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
-    for(int i = 0; i < this->iMATLines; i++){
-        for(int j = 0; j < this->iMATColumns; j++){
-            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(j, i));
+    auto toReturn = new CMatrix<T>(this->MATGetColumns(), this->MATGetLines());
+    for(int i = 0; i < this->MATGetLines(); i++){
+        for(int j = 0; j < this->MATGetColumns(); j++){
+            toReturn->MATSetItemAt(j, i, this->MATGetItemAt(i, j));
         }
     }
     return toReturn;
@@ -295,9 +295,9 @@ CMatrix<T> CMatrix<T>::operator+(CMatrix<T> matrix){
  */
 template<typename T>
 CMatrix<T> CMatrix<T>::operator*(CMatrix<T> matrix){
-    if(matrix.iMATColumns == this->MATGetLines() && matrix.iMATLines == this->MATGetColumns()) {
-        auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
-        for (int i = 0; i < this->iMATLines; i++) {
+    if(matrix.MATGetColumns() == this->MATGetLines() && matrix.MATGetLines() == this->MATGetColumns()) {
+        auto toReturn = new CMatrix<T>(this->MATGetLines(), matrix.MATGetColumns());
+        for (int i = 0; i < this->MATGetLines(); i++) {
             for (int j = 0; j < matrix.MATGetColumns(); j++) {
                 for(int k = 0; k < this->MATGetColumns(); ++k) {
                     toReturn->MATSetItemAt(i , j, toReturn->MATGetItemAt(i, j) + (this->MATGetItemAt(i, k)) * (matrix.MATGetItemAt(k, j)));
@@ -306,6 +306,8 @@ CMatrix<T> CMatrix<T>::operator*(CMatrix<T> matrix){
         }
         return *toReturn;
     } else {
+        this->MATPrint();
+        printf("%d:%d %d:%d", matrix.iMATColumns, this->MATGetLines(), matrix.iMATLines, this->MATGetColumns());
         throw CMatrixException(MATRIX_EXCEPTION_INCONSISTENT_DIMENSIONS, "Matrix dimensions incompatibles for multiplication");
     }
 }
