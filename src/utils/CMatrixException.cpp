@@ -8,15 +8,15 @@
  * @param message Message describing the exception
  */
 CMatrixException::CMatrixException(int errorCode, char *message) noexcept {
-    this->errorCode = errorCode;
-    this->message = message;
+    this->iMAEErrorCode = errorCode;
+    this->sMAEMessage = message;
 }
 
 /**
  * @inheritDoc
  */
 const char *CMatrixException::what() const noexcept {
-    char* toReturn = (char*) malloc(sizeof(this->message) + sizeof(char) * 5);
-    sprintf(toReturn, "%d: %s", this->errorCode, this->message);
+    char* toReturn = (char*) malloc(sizeof(this->sMAEMessage) + sizeof(char) * 5);
+    sprintf(toReturn, "%d: %s", this->iMAEErrorCode, this->sMAEMessage);
     return toReturn;
 }

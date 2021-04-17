@@ -1,8 +1,9 @@
-#ifndef MATRIXEDCPP_CMATRIXEXCEPTION_H
+  #ifndef MATRIXEDCPP_CMATRIXEXCEPTION_H
 #define MATRIXEDCPP_CMATRIXEXCEPTION_H
 
 #include <exception>
 #include <stdio.h>
+#include <cstdlib>
 
 /**
  * CMatrixException class
@@ -33,13 +34,14 @@ private:
     /**
      * Message describing the exception
      */
-    char* message;
+    char* sMAEMessage;
+
     /**
      * Error code used to identify the exception
      *
      * @see defines.h For the list of available error codes
      */
-    int errorCode;
+    int iMAEErrorCode;
 
 };
 

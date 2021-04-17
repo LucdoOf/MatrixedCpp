@@ -1,7 +1,3 @@
-//
-// Created by lucas on 07/04/2021.
-//
-
 #include "string_utils.h"
 #include <cstdio>
 
