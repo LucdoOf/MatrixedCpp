@@ -4,6 +4,12 @@
 // ================= Global error codes ================= //
 
 /**
+ * Thrown when a memory-linked error occured
+ * 
+ * @example Malloc fail
+ */
+#define MATRIX_EXCEPTION_MEMORY_ERROR 0
+/**
  * Thrown when a file is not readable bu the program or does not exist
  */
 #define MATRIX_EXCEPTION_NO_SUCH_FILE 1

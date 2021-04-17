@@ -16,5 +16,7 @@ CMatrixException::CMatrixException(int errorCode, char *message) noexcept {
  * @inheritDoc
  */
 const char *CMatrixException::what() const noexcept {
-    return this->message;
+    char* toReturn = (char*) malloc(sizeof(this->message) + sizeof(char) * 5);
+    sprintf(toReturn, "%d: %s", this->errorCode, this->message);
+    return toReturn;
 }

@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include<stdarg.h>
+#include <stdarg.h>
 
 /**
  * Merge vargs strings into one newly allocated string

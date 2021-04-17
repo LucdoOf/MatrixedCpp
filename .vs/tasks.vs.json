@@ -1,0 +1,17 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "tâche-MatrixedCpp",
+      "appliesTo": "/",
+      "type": "launch",
+      "args": ["azeaze"]
+    },
+    {
+      "taskLabel": "tâche-MatrixedCpp",
+      "appliesTo": "/",
+      "type": "launch",
+      "args": ["aze"]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 #define MATRIXEDCPP_CMATRIXEXCEPTION_H
 
 #include <exception>
+#include <stdio.h>
 
 /**
  * CMatrixException class

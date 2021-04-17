@@ -41,16 +41,18 @@ CMatrix<double>* CMatrixReader::MARRead() {
     if (file) {
         // Variables initialization
         CMatrix<double> *matrix;                    // Current matrix
-        int bufferLength = 255;                     // Max buffer length (by line)
-        char buffer[bufferLength];                  // Buffer used to read the file
+        int bufferLength = 1024;                     // Max buffer length (by line)
+        char buffer[1024];                          // Buffer used to read the file
         int fileLineCounter = 0;                    // Actual number of the file lines that have been analyzed
         int matrixLineCounter = 0;                  // Number of lines in the matrix
         int matrixColumnCounter = 0;                // Number of columns in the matrix
         char matrixType[50];                        // Type of the matrix items
         int actualMatrixLineCounter = 0;            // Number of matrix lines that have been analyzed
         int actualMatrixColumnCounter = 0;          // Number of matrix columns that have been analyzed
+        // Check if the malloc failed
+        if (!buffer) throw CMatrixException(MATRIX_EXCEPTION_MEMORY_ERROR, "Can't allocate read buffer");
         // Buffer will iterate through all of the file lines
-        while (fgets(buffer, bufferLength, file)) {
+        while (fgets(buffer, bufferLength - 1, file) != NULL) {
             // Increment the number of the file lines analyzed
             fileLineCounter++;
             // The buffer treatment will depend on the actual number of lines analyzed
