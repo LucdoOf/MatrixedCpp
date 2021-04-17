@@ -55,7 +55,7 @@ public:
      *
      * @return The transposed matrix
      */
-    CMatrix<T> MATTranspose();
+    CMatrix<T>* MATTranspose();
     /**
      * CMatrix minus CMatrix operator
      *
@@ -101,6 +101,15 @@ public:
      * @return Caller matrix divided by the provided number into a new matrix
      */
     CMatrix<T> operator/(double divider);
+    /**
+     * CMatrix assignment operator overload
+     *
+     * This overload will replace the standard shallow copy behavior by a deep copy behavior
+     * to avoid pointers inconsistencies
+     *
+     * @param matrix Matrix to copy
+     */
+    CMatrix<T> & operator=(const CMatrix<T> &matrix);
     /**
      * Retrieves the item at the provided line and at the provided column
      *
@@ -224,14 +233,14 @@ CMatrix<T>::~CMatrix(){
  * @return The transposed matrix
  */
 template<typename T>
-CMatrix<T> CMatrix<T>::MATTranspose(){
-    CMatrix<T> toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
+CMatrix<T>* CMatrix<T>::MATTranspose(){
+    auto toReturn = new CMatrix<T>(this->MATGetLines(), this->MATGetColumns());
     for(int i = 0; i < this->iMATLines; i++){
         for(int j = 0; j < this->iMATColumns; j++){
-            toReturn.MATSetItemAt(i, j, this->MATGetItemAt(j, i));
+            toReturn->MATSetItemAt(i, j, this->MATGetItemAt(j, i));
         }
     }
-    return &toReturn;
+    return toReturn;
 }
 
 /**
@@ -390,6 +399,25 @@ void CMatrix<T>::MATPrint(){
         }
     }
     printf("\n\n");
+}
+
+/**
+ * CMatrix assignment operator overload
+ *
+ * This overload will replace the standard shallow copy behavior by a deep copy behavior
+ * to avoid pointers inconsistencies
+ *
+ * @param matrix Matrix to copy
+ */
+template<typename T>
+CMatrix<T>& CMatrix<T>::operator=(const CMatrix<T> &matrix) {
+    // Prevent infinite loops
+    if (&matrix == this) return *this;
+    // Manually call destructor
+    this->~CMatrix<T>();
+    // Deep copy then return
+    new (this) CMatrix<T>(matrix);
+    return *this;
 }
 
 #endif //MATRIXEDCPP_CMATRIX_H
