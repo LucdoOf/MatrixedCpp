@@ -13,6 +13,8 @@ char* strMultiCat(int count, ...) {
     va_list ap;
     va_start(ap, count);
     char* toReturn = (char*) malloc(sizeof(char) * 128);
+    toReturn[0] = (char) 0;
+    toReturn[1] = '\0';
 
     // Loop through the vargs
     for (int i = 0; i < count; i++) {
@@ -21,11 +23,7 @@ char* strMultiCat(int count, ...) {
         // Prevent NPTR exceptions
         if (string == nullptr) continue;
         // Cat the previous string with the actual string using safeCat method to handle memory overflow issues
-        if (!toReturn) {
-            strcpy(toReturn, string);
-        } else {
-            toReturn = strSafeCat(toReturn, string);
-        }
+        toReturn = strSafeCat(toReturn, string);
     }
 
     // Close the vargs stream and return the final string
