@@ -29,10 +29,26 @@ result.MATPrint();
 // ...
 ```
 
+A *main function* is included in the project so that you can test out the library. 
+Program arguments must be serialized matrix files in the following format:
+
+```
+TypeMatrice=double
+NBLignes=[int]
+NBColonnes=[int]
+Matrice=[
+a b c ...
+d e f ...
+...
+]
+```
+
+For examples, see [Information](#information) 
+
 ### Information
 
-Sources under `src/`
-
-Headers under `include` 
+- Sources under `src/`
+- Headers under `include/`
+- Serialized matrices test files under `tests/`
 
 > Made with CLion and CMake under Ubuntu 20.04 KER 5.8.0.50 by Garofalo Lucas and Tardieu Eliott
